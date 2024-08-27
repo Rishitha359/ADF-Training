@@ -1,0 +1,58 @@
+{
+	"name": "DF_IncrementAmtQty",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_order",
+						"type": "DatasetReference"
+					},
+					"name": "OrderDetails"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "dsoutputdataorder",
+						"type": "DatasetReference"
+					},
+					"name": "UpdatedOrderDetails"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DerivingUnitPrice"
+				},
+				{
+					"name": "UpdatingQuantity"
+				},
+				{
+					"name": "UpdatingThePrice"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          OrderID as short,",
+				"          ProductID as string,",
+				"          ProductName as string,",
+				"          Quantity as short,",
+				"          OrderTimestamp as string,",
+				"          Price as double,",
+				"          CustomerID as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> OrderDetails",
+				"OrderDetails derive(Unit_Price = Price/Quantity) ~> DerivingUnitPrice",
+				"DerivingUnitPrice derive(Quantity = Quantity + 2) ~> UpdatingQuantity",
+				"UpdatingQuantity derive(Price = Quantity * Unit_Price) ~> UpdatingThePrice",
+				"UpdatingThePrice sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> UpdatedOrderDetails"
+			]
+		}
+	}
+}

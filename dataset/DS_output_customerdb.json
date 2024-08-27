@@ -1,0 +1,17 @@
+{
+	"name": "DS_output_customerdb",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SQL",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "raw",
+			"table": "CustomerDetails"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

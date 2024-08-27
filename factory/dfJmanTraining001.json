@@ -1,0 +1,9 @@
+{
+	"name": "dfJmanTraining001",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "cecab398-08f9-49fb-9c29-f89dcfc4bbcd",
+		"tenantId": "2800c0a0-70e9-49be-8733-faeaa6aced99"
+	}
+}

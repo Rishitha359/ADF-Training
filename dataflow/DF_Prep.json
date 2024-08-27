@@ -10,13 +10,6 @@
 						"type": "DatasetReference"
 					},
 					"name": "CustomerDetails"
-				},
-				{
-					"dataset": {
-						"referenceName": "DS_output_orderdb",
-						"type": "DatasetReference"
-					},
-					"name": "source1"
 				}
 			],
 			"sinks": [
@@ -30,7 +23,13 @@
 			],
 			"transformations": [
 				{
-					"name": "join1"
+					"name": "RetrievingNotNullCustomerIdRecords"
+				},
+				{
+					"name": "RemovingDuplicates"
+				},
+				{
+					"name": "FindingDuplicates"
 				}
 			],
 			"scriptLines": [
@@ -50,25 +49,12 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> CustomerDetails",
-				"source(output(",
-				"          OrderID as integer,",
-				"          ProductID as string,",
-				"          ProductName as string,",
-				"          Quantity as integer,",
-				"          OrderTimestamp as string,",
-				"          Price as float,",
-				"          CustomerID as string",
-				"     ),",
-				"     allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> source1",
-				"CustomerDetails, source1 join(CustomerDetails@CustomerID == source1@CustomerID,",
-				"     joinType:'inner',",
-				"     matchType:'exact',",
-				"     ignoreSpaces: false,",
-				"     broadcast: 'auto')~> join1",
-				"join1 sink(allowSchemaDrift: true,",
+				"CustomerDetails filter(!isNull(CustomerID)||CustomerID!='NULL') ~> RetrievingNotNullCustomerIdRecords",
+				"FindingDuplicates filter(Rank==1) ~> RemovingDuplicates",
+				"RetrievingNotNullCustomerIdRecords window(over(CustomerID),",
+				"     asc(CustomerID, true),",
+				"     Rank = rowNumber()) ~> FindingDuplicates",
+				"RemovingDuplicates sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'table',",
 				"     store: 'sqlserver',",

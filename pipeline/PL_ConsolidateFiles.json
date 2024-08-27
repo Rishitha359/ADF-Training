@@ -1,9 +1,10 @@
 {
-	"name": "PL_Copy_to_DB",
+	"name": "PL_ConsolidateFiles",
 	"properties": {
 		"activities": [
 			{
-				"name": "Move CustomerDetails to DB",
+				"name": "Consolidating CustomerDetails file",
+				"description": "",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -20,7 +21,7 @@
 						"storeSettings": {
 							"type": "AzureBlobStorageReadSettings",
 							"recursive": true,
-							"wildcardFileName": "*.csv",
+							"wildcardFileName": "*customerdetails.csv",
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
@@ -28,11 +29,16 @@
 						}
 					},
 					"sink": {
-						"type": "AzureSqlSink",
-						"writeBehavior": "insert",
-						"sqlWriterUseTableLock": false,
-						"tableOption": "autoCreate",
-						"disableMetricsCollection": false
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings",
+							"copyBehavior": "MergeFiles"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".csv"
+						}
 					},
 					"enableStaging": false,
 					"translator": {
@@ -46,22 +52,21 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "DS_CustomerConsolidated",
+						"referenceName": "DS_CustomerInput",
 						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "DS_output_customerdb",
+						"referenceName": "DS_CustomerConsolidated",
 						"type": "DatasetReference"
 					}
 				]
 			},
 			{
-				"name": "Move OrderDetails to DB",
+				"name": "Consolidating OrderDetails file",
+				"description": "",
 				"type": "Copy",
-				"state": "Active",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -73,23 +78,25 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "DelimitedTextSource",
+						"type": "ExcelSource",
 						"storeSettings": {
 							"type": "AzureBlobStorageReadSettings",
 							"recursive": true,
-							"wildcardFileName": "*.xlsx",
+							"wildcardFileName": "*orderdetails.xlsx",
 							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
 						}
 					},
 					"sink": {
-						"type": "AzureSqlSink",
-						"writeBehavior": "insert",
-						"sqlWriterUseTableLock": false,
-						"tableOption": "autoCreate",
-						"disableMetricsCollection": false
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings",
+							"copyBehavior": "MergeFiles"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".xlsx"
+						}
 					},
 					"enableStaging": false,
 					"translator": {
@@ -103,20 +110,18 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "DS_OrderConsolidated",
+						"referenceName": "DS_OrderInput",
 						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "DS_output_orderdb",
+						"referenceName": "DS_OrderConsolidated",
 						"type": "DatasetReference"
 					}
 				]
 			}
 		],
-		"annotations": [],
-		"lastPublishTime": "2024-08-27T06:32:49Z"
-	},
-	"type": "Microsoft.DataFactory/factories/pipelines"
+		"annotations": []
+	}
 }

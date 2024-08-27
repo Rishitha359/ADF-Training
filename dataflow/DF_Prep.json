@@ -10,6 +10,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "CustomerDetails"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_output_orderdb",
+						"type": "DatasetReference"
+					},
+					"name": "OrderDetails"
 				}
 			],
 			"sinks": [
@@ -19,6 +26,13 @@
 						"type": "LinkedServiceReference"
 					},
 					"name": "CleanedCustomerData"
+				},
+				{
+					"linkedService": {
+						"referenceName": "LS_SQL",
+						"type": "LinkedServiceReference"
+					},
+					"name": "CleanedOrderData"
 				}
 			],
 			"transformations": [
@@ -30,6 +44,15 @@
 				},
 				{
 					"name": "FindingDuplicates"
+				},
+				{
+					"name": "RetrievingNotNullOrderIdRecords"
+				},
+				{
+					"name": "FindingDuplicate"
+				},
+				{
+					"name": "RemoveDuplicates"
 				}
 			],
 			"scriptLines": [
@@ -49,16 +72,34 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> CustomerDetails",
+				"source(output(",
+				"          OrderID as integer,",
+				"          ProductID as string,",
+				"          ProductName as string,",
+				"          Quantity as integer,",
+				"          OrderTimestamp as date,",
+				"          Price as float,",
+				"          CustomerID as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> OrderDetails",
 				"CustomerDetails filter(!isNull(CustomerID)||CustomerID!='NULL') ~> RetrievingNotNullCustomerIdRecords",
 				"FindingDuplicates filter(Rank==1) ~> RemovingDuplicates",
 				"RetrievingNotNullCustomerIdRecords window(over(CustomerID),",
 				"     asc(CustomerID, true),",
 				"     Rank = rowNumber()) ~> FindingDuplicates",
+				"OrderDetails filter(!isNull(OrderID)) ~> RetrievingNotNullOrderIdRecords",
+				"RetrievingNotNullOrderIdRecords window(over(OrderID),",
+				"     asc(OrderID, true),",
+				"     Rank = rowNumber()) ~> FindingDuplicate",
+				"FindingDuplicate filter(Rank==1) ~> RemoveDuplicates",
 				"RemovingDuplicates sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'table',",
 				"     store: 'sqlserver',",
-				"     schemaName: 'report',",
+				"     schemaName: 'prep',",
 				"     tableName: 'CustomerDetails',",
 				"     insertable: true,",
 				"     updateable: false,",
@@ -67,7 +108,21 @@
 				"     recreate: true,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> CleanedCustomerData"
+				"     errorHandlingOption: 'stopOnFirstError') ~> CleanedCustomerData",
+				"RemoveDuplicates sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'prep',",
+				"     tableName: 'OrderDetails',",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     deletable: false,",
+				"     upsertable: false,",
+				"     recreate: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> CleanedOrderData"
 			]
 		}
 	}

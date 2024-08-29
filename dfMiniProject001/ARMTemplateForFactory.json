@@ -262,6 +262,57 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/PL_Move_To_Report')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ReportingTable",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DL_Reporting",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"UserTable": {},
+									"BookingTable": {},
+									"EventTable": {},
+									"EventTab": {},
+									"LocationBasedEvents": {},
+									"MonthBasedEvents": {},
+									"CountOfBookingPerUser": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/DL_Reporting')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DS_Postgres_Booking')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -269,6 +320,9 @@
 				"linkedServiceName": {
 					"referenceName": "LS_Postgres",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Postgres_Tables"
 				},
 				"annotations": [],
 				"type": "PostgreSqlV2Table",
@@ -291,6 +345,9 @@
 					"referenceName": "LS_Postgres",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Postgres_Tables"
+				},
 				"annotations": [],
 				"type": "PostgreSqlV2Table",
 				"schema": [],
@@ -312,6 +369,9 @@
 					"referenceName": "LS_Postgres",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Postgres_Tables"
+				},
 				"annotations": [],
 				"type": "PostgreSqlV2Table",
 				"schema": [],
@@ -325,6 +385,122 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DS_Prep_Booking')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_Sql",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Prep Layer Datasets"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "prep",
+					"table": "Booking"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_Sql')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_Prep_Event')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_Sql",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Prep Layer Datasets"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "date",
+						"type": "date"
+					},
+					{
+						"name": "description",
+						"type": "nvarchar"
+					},
+					{
+						"name": "location",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "prep",
+					"table": "Event"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_Sql')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_Prep_User')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_Sql",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Prep Layer Datasets"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "email",
+						"type": "nvarchar"
+					},
+					{
+						"name": "password",
+						"type": "nvarchar"
+					},
+					{
+						"name": "isAdmin",
+						"type": "bit"
+					}
+				],
+				"typeProperties": {
+					"schema": "prep",
+					"table": "User"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_Sql')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DS_Sql_Booking')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -332,6 +508,9 @@
 				"linkedServiceName": {
 					"referenceName": "LS_Sql",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Raw Layer Datasets"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
@@ -354,6 +533,9 @@
 					"referenceName": "LS_Sql",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Raw Layer Datasets"
+				},
 				"annotations": [],
 				"type": "AzureSqlTable",
 				"schema": [],
@@ -374,6 +556,9 @@
 				"linkedServiceName": {
 					"referenceName": "LS_Sql",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Raw Layer Datasets"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
@@ -670,6 +855,204 @@
 				"[concat(variables('factoryId'), '/datasets/DS_Sql_User')]",
 				"[concat(variables('factoryId'), '/datasets/DS_Sql_Event')]",
 				"[concat(variables('factoryId'), '/datasets/DS_Sql_Booking')]",
+				"[concat(variables('factoryId'), '/linkedServices/LS_Sql')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DL_Reporting')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DS_Prep_User",
+								"type": "DatasetReference"
+							},
+							"name": "UserTable"
+						},
+						{
+							"dataset": {
+								"referenceName": "DS_Prep_Booking",
+								"type": "DatasetReference"
+							},
+							"name": "BookingTable"
+						},
+						{
+							"dataset": {
+								"referenceName": "DS_Prep_Event",
+								"type": "DatasetReference"
+							},
+							"name": "EventTable"
+						},
+						{
+							"dataset": {
+								"referenceName": "DS_Prep_Event",
+								"type": "DatasetReference"
+							},
+							"name": "EventTab"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "LS_Sql",
+								"type": "LinkedServiceReference"
+							},
+							"name": "LocationBasedEvents"
+						},
+						{
+							"linkedService": {
+								"referenceName": "LS_Sql",
+								"type": "LinkedServiceReference"
+							},
+							"name": "MonthBasedEvents"
+						},
+						{
+							"linkedService": {
+								"referenceName": "LS_Sql",
+								"type": "LinkedServiceReference"
+							},
+							"name": "CountOfBookingPerUser"
+						}
+					],
+					"transformations": [
+						{
+							"name": "UserBookingJoin"
+						},
+						{
+							"name": "BookingsPerUser"
+						},
+						{
+							"name": "EventsBasedOnLocation"
+						},
+						{
+							"name": "SortingRecords"
+						},
+						{
+							"name": "EventBookingJoin"
+						},
+						{
+							"name": "EventsBasedOnMonths"
+						},
+						{
+							"name": "MonthColumn"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          id as integer,",
+						"          name as string,",
+						"          email as string,",
+						"          password as string,",
+						"          isAdmin as boolean",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> UserTable",
+						"source(output(",
+						"          id as integer,",
+						"          userId as integer,",
+						"          eventId as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> BookingTable",
+						"source(output(",
+						"          id as integer,",
+						"          name as string,",
+						"          date as date,",
+						"          description as string,",
+						"          location as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> EventTable",
+						"source(output(",
+						"          id as integer,",
+						"          name as string,",
+						"          date as date,",
+						"          description as string,",
+						"          location as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> EventTab",
+						"UserTable, BookingTable join(UserTable@id == BookingTable@id,",
+						"     joinType:'left',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> UserBookingJoin",
+						"UserBookingJoin aggregate(groupBy(UserTable@id,",
+						"          name),",
+						"     count = count(BookingTable@id)) ~> BookingsPerUser",
+						"EventTable aggregate(groupBy(location),",
+						"     Count = count(id)) ~> EventsBasedOnLocation",
+						"EventsBasedOnLocation sort(desc(Count, true),",
+						"     asc(location, true)) ~> SortingRecords",
+						"MonthColumn, BookingTable join(EventTab@id == eventId,",
+						"     joinType:'left',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> EventBookingJoin",
+						"EventBookingJoin aggregate(groupBy(date),",
+						"     Total_bookings = count(BookingTable@id)) ~> EventsBasedOnMonths",
+						"EventTab derive(Month = month(date)) ~> MonthColumn",
+						"SortingRecords sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'table',",
+						"     store: 'sqlserver',",
+						"     schemaName: 'report',",
+						"     tableName: 'LocationBasedEvents',",
+						"     insertable: true,",
+						"     updateable: false,",
+						"     deletable: false,",
+						"     upsertable: false,",
+						"     recreate: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> LocationBasedEvents",
+						"EventsBasedOnMonths sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'table',",
+						"     store: 'sqlserver',",
+						"     schemaName: 'report',",
+						"     tableName: 'MonthBasedEvents',",
+						"     insertable: true,",
+						"     updateable: false,",
+						"     deletable: false,",
+						"     upsertable: false,",
+						"     recreate: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> MonthBasedEvents",
+						"BookingsPerUser sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'table',",
+						"     store: 'sqlserver',",
+						"     schemaName: 'report',",
+						"     tableName: 'CountPerUser',",
+						"     insertable: true,",
+						"     updateable: false,",
+						"     deletable: false,",
+						"     upsertable: false,",
+						"     recreate: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> CountOfBookingPerUser"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_Prep_User')]",
+				"[concat(variables('factoryId'), '/datasets/DS_Prep_Booking')]",
+				"[concat(variables('factoryId'), '/datasets/DS_Prep_Event')]",
 				"[concat(variables('factoryId'), '/linkedServices/LS_Sql')]"
 			]
 		}

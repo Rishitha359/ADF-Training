@@ -1,0 +1,38 @@
+{
+	"name": "DS_Prep_User",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Sql",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "email",
+				"type": "nvarchar"
+			},
+			{
+				"name": "password",
+				"type": "nvarchar"
+			},
+			{
+				"name": "isAdmin",
+				"type": "bit"
+			}
+		],
+		"typeProperties": {
+			"schema": "prep",
+			"table": "User"
+		}
+	}
+}

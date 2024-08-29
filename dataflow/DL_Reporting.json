@@ -1,0 +1,190 @@
+{
+	"name": "DL_Reporting",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Prep_User",
+						"type": "DatasetReference"
+					},
+					"name": "UserTable"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Prep_Booking",
+						"type": "DatasetReference"
+					},
+					"name": "BookingTable"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Prep_Event",
+						"type": "DatasetReference"
+					},
+					"name": "EventTable"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Prep_Event",
+						"type": "DatasetReference"
+					},
+					"name": "EventTab"
+				}
+			],
+			"sinks": [
+				{
+					"linkedService": {
+						"referenceName": "LS_Sql",
+						"type": "LinkedServiceReference"
+					},
+					"name": "LocationBasedEvents"
+				},
+				{
+					"linkedService": {
+						"referenceName": "LS_Sql",
+						"type": "LinkedServiceReference"
+					},
+					"name": "MonthBasedEvents"
+				},
+				{
+					"linkedService": {
+						"referenceName": "LS_Sql",
+						"type": "LinkedServiceReference"
+					},
+					"name": "CountOfBookingPerUser"
+				}
+			],
+			"transformations": [
+				{
+					"name": "UserBookingJoin"
+				},
+				{
+					"name": "BookingsPerUser"
+				},
+				{
+					"name": "EventsBasedOnLocation"
+				},
+				{
+					"name": "SortingRecords"
+				},
+				{
+					"name": "EventBookingJoin"
+				},
+				{
+					"name": "EventsBasedOnMonths"
+				},
+				{
+					"name": "MonthColumn"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id as integer,",
+				"          name as string,",
+				"          email as string,",
+				"          password as string,",
+				"          isAdmin as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> UserTable",
+				"source(output(",
+				"          id as integer,",
+				"          userId as integer,",
+				"          eventId as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> BookingTable",
+				"source(output(",
+				"          id as integer,",
+				"          name as string,",
+				"          date as date,",
+				"          description as string,",
+				"          location as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> EventTable",
+				"source(output(",
+				"          id as integer,",
+				"          name as string,",
+				"          date as date,",
+				"          description as string,",
+				"          location as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> EventTab",
+				"UserTable, BookingTable join(UserTable@id == BookingTable@id,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> UserBookingJoin",
+				"UserBookingJoin aggregate(groupBy(UserTable@id,",
+				"          name),",
+				"     count = count(BookingTable@id)) ~> BookingsPerUser",
+				"EventTable aggregate(groupBy(location),",
+				"     Count = count(id)) ~> EventsBasedOnLocation",
+				"EventsBasedOnLocation sort(desc(Count, true),",
+				"     asc(location, true)) ~> SortingRecords",
+				"MonthColumn, BookingTable join(EventTab@id == eventId,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> EventBookingJoin",
+				"EventBookingJoin aggregate(groupBy(date),",
+				"     Total_bookings = count(BookingTable@id)) ~> EventsBasedOnMonths",
+				"EventTab derive(Month = month(date)) ~> MonthColumn",
+				"SortingRecords sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'report',",
+				"     tableName: 'LocationBasedEvents',",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     deletable: false,",
+				"     upsertable: false,",
+				"     recreate: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> LocationBasedEvents",
+				"EventsBasedOnMonths sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'report',",
+				"     tableName: 'MonthBasedEvents',",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     deletable: false,",
+				"     upsertable: false,",
+				"     recreate: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> MonthBasedEvents",
+				"BookingsPerUser sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'report',",
+				"     tableName: 'CountPerUser',",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     deletable: false,",
+				"     upsertable: false,",
+				"     recreate: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> CountOfBookingPerUser"
+			]
+		}
+	}
+}

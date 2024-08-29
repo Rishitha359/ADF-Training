@@ -1,0 +1,17 @@
+{
+	"name": "DS_Sql_Event",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Sql",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "stage",
+			"table": "Event"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

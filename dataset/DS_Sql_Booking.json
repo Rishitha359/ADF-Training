@@ -1,0 +1,17 @@
+{
+	"name": "DS_Sql_Booking",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Sql",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "stage",
+			"table": "Booking"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

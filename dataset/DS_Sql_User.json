@@ -1,0 +1,17 @@
+{
+	"name": "DS_Sql_User",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Sql",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "stage",
+			"table": "User"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

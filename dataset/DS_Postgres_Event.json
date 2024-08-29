@@ -1,0 +1,17 @@
+{
+	"name": "DS_Postgres_Event",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Postgres",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "PostgreSqlV2Table",
+		"schema": [],
+		"typeProperties": {
+			"schema": "public",
+			"table": "Event"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

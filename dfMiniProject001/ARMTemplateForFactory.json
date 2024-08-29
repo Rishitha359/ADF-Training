@@ -1,0 +1,677 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "dfMiniProject001"
+		},
+		"LS_Postgres_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'LS_Postgres'"
+		},
+		"LS_Sql_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'LS_Sql'"
+		},
+		"LS_Postgres_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "localhost"
+		},
+		"LS_Postgres_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "Event_Planner"
+		},
+		"LS_Postgres_properties_typeProperties_username": {
+			"type": "string",
+			"defaultValue": "postgres"
+		},
+		"LS_Sql_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "dbs-training001.database.windows.net"
+		},
+		"LS_Sql_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "db_training001"
+		},
+		"LS_Sql_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "Rishitha"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_Move_Postgres_To_Sql')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Moving User to Sql",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "PostgreSqlV2Source"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"tableOption": "autoCreate",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_Postgres_User",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_Sql_User",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Moving Event to Sql",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "PostgreSqlV2Source"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"tableOption": "autoCreate",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_Postgres_Event",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_Sql_Event",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Moving Booking to Sql",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "PostgreSqlV2Source"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"tableOption": "autoCreate",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_Postgres_Booking",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_Sql_Booking",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-08-29T05:59:28Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_Postgres_User')]",
+				"[concat(variables('factoryId'), '/datasets/DS_Sql_User')]",
+				"[concat(variables('factoryId'), '/datasets/DS_Postgres_Event')]",
+				"[concat(variables('factoryId'), '/datasets/DS_Sql_Event')]",
+				"[concat(variables('factoryId'), '/datasets/DS_Postgres_Booking')]",
+				"[concat(variables('factoryId'), '/datasets/DS_Sql_Booking')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_Move_To_Prep')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Cleaning Data",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DL_Cleaning",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"UserTable": {},
+									"EventTable": {},
+									"BookingTable": {},
+									"CleanedUserTable": {},
+									"CleanedEventTable": {},
+									"CleanedBookingTable": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-08-29T05:59:28Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/DL_Cleaning')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_Postgres_Booking')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_Postgres",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "PostgreSqlV2Table",
+				"schema": [],
+				"typeProperties": {
+					"schema": "public",
+					"table": "Booking"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_Postgres')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_Postgres_Event')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_Postgres",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "PostgreSqlV2Table",
+				"schema": [],
+				"typeProperties": {
+					"schema": "public",
+					"table": "Event"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_Postgres')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_Postgres_User')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_Postgres",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "PostgreSqlV2Table",
+				"schema": [],
+				"typeProperties": {
+					"schema": "public",
+					"table": "User"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_Postgres')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_Sql_Booking')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_Sql",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "stage",
+					"table": "Booking"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_Sql')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_Sql_Event')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_Sql",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "stage",
+					"table": "Event"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_Sql')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_Sql_User')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_Sql",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "stage",
+					"table": "User"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_Sql')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_Postgres')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "PostgreSqlV2",
+				"typeProperties": {
+					"server": "[parameters('LS_Postgres_properties_typeProperties_server')]",
+					"port": 5432,
+					"database": "[parameters('LS_Postgres_properties_typeProperties_database')]",
+					"username": "[parameters('LS_Postgres_properties_typeProperties_username')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('LS_Postgres_password')]"
+					},
+					"sslMode": 2,
+					"authenticationType": "Basic"
+				},
+				"connectVia": {
+					"referenceName": "IR-postgres",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/IR-postgres')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_Sql')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('LS_Sql_properties_typeProperties_server')]",
+					"database": "[parameters('LS_Sql_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('LS_Sql_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('LS_Sql_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/IR-postgres')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DL_Cleaning')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DS_Sql_User",
+								"type": "DatasetReference"
+							},
+							"name": "UserTable"
+						},
+						{
+							"dataset": {
+								"referenceName": "DS_Sql_Event",
+								"type": "DatasetReference"
+							},
+							"name": "EventTable"
+						},
+						{
+							"dataset": {
+								"referenceName": "DS_Sql_Booking",
+								"type": "DatasetReference"
+							},
+							"name": "BookingTable"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "LS_Sql",
+								"type": "LinkedServiceReference"
+							},
+							"name": "CleanedUserTable"
+						},
+						{
+							"linkedService": {
+								"referenceName": "LS_Sql",
+								"type": "LinkedServiceReference"
+							},
+							"name": "CleanedEventTable"
+						},
+						{
+							"linkedService": {
+								"referenceName": "LS_Sql",
+								"type": "LinkedServiceReference"
+							},
+							"name": "CleanedBookingTable"
+						}
+					],
+					"transformations": [
+						{
+							"name": "RemovingUserWithNoEmail"
+						},
+						{
+							"name": "IdentifyingDuplicateRows"
+						},
+						{
+							"name": "RemovingDuplicates"
+						},
+						{
+							"name": "SelectingRequiredColumns"
+						},
+						{
+							"name": "SortingRecords"
+						},
+						{
+							"name": "ChangingTypeTimestampToDate"
+						},
+						{
+							"name": "RemovingNoNameLocationEvents"
+						},
+						{
+							"name": "IdentifyingDuplicates"
+						},
+						{
+							"name": "RemovingDuplicateRecords"
+						},
+						{
+							"name": "SelectReqColumns"
+						},
+						{
+							"name": "SortRecords"
+						},
+						{
+							"name": "LocatingDuplicates"
+						},
+						{
+							"name": "RemoveDuplicates"
+						},
+						{
+							"name": "SelectingRequiredColumn"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          id as integer,",
+						"          email as string,",
+						"          password as string,",
+						"          isAdmin as boolean,",
+						"          name as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> UserTable",
+						"source(output(",
+						"          id as integer,",
+						"          name as string,",
+						"          date as timestamp,",
+						"          description as string,",
+						"          location as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> EventTable",
+						"source(output(",
+						"          id as integer,",
+						"          userId as integer,",
+						"          eventId as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> BookingTable",
+						"UserTable filter(!isNull(id) && !isNull(email)) ~> RemovingUserWithNoEmail",
+						"RemovingUserWithNoEmail window(over(email),",
+						"     asc(id, true),",
+						"     Rank = rowNumber()) ~> IdentifyingDuplicateRows",
+						"IdentifyingDuplicateRows filter(Rank==1) ~> RemovingDuplicates",
+						"RemovingDuplicates select(mapColumn(",
+						"          id,",
+						"          name,",
+						"          email,",
+						"          password,",
+						"          isAdmin",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> SelectingRequiredColumns",
+						"SelectingRequiredColumns sort(asc(id, true)) ~> SortingRecords",
+						"EventTable cast(output(",
+						"          date as date",
+						"     ),",
+						"     errors: true) ~> ChangingTypeTimestampToDate",
+						"ChangingTypeTimestampToDate filter(!isNull(name) || !isNull(location)) ~> RemovingNoNameLocationEvents",
+						"RemovingNoNameLocationEvents window(over(name,",
+						"          location,",
+						"          date),",
+						"     asc(id, false),",
+						"     Rank = rowNumber()) ~> IdentifyingDuplicates",
+						"IdentifyingDuplicates filter(Rank==1) ~> RemovingDuplicateRecords",
+						"RemovingDuplicateRecords select(mapColumn(",
+						"          id,",
+						"          name,",
+						"          date,",
+						"          description,",
+						"          location",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> SelectReqColumns",
+						"SelectReqColumns sort(asc(id, true)) ~> SortRecords",
+						"BookingTable window(over(id),",
+						"     asc(id, true),",
+						"     Rank = rowNumber()) ~> LocatingDuplicates",
+						"LocatingDuplicates filter(Rank==1) ~> RemoveDuplicates",
+						"RemoveDuplicates select(mapColumn(",
+						"          id,",
+						"          userId,",
+						"          eventId",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> SelectingRequiredColumn",
+						"SortingRecords sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'table',",
+						"     store: 'sqlserver',",
+						"     schemaName: 'prep',",
+						"     tableName: 'User',",
+						"     insertable: true,",
+						"     updateable: false,",
+						"     deletable: false,",
+						"     upsertable: false,",
+						"     recreate: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> CleanedUserTable",
+						"SortRecords sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'table',",
+						"     store: 'sqlserver',",
+						"     schemaName: 'prep',",
+						"     tableName: 'Event',",
+						"     insertable: true,",
+						"     updateable: false,",
+						"     deletable: false,",
+						"     upsertable: false,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> CleanedEventTable",
+						"SelectingRequiredColumn sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'table',",
+						"     store: 'sqlserver',",
+						"     schemaName: 'prep',",
+						"     tableName: 'Booking',",
+						"     insertable: true,",
+						"     updateable: false,",
+						"     deletable: false,",
+						"     upsertable: false,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> CleanedBookingTable"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_Sql_User')]",
+				"[concat(variables('factoryId'), '/datasets/DS_Sql_Event')]",
+				"[concat(variables('factoryId'), '/datasets/DS_Sql_Booking')]",
+				"[concat(variables('factoryId'), '/linkedServices/LS_Sql')]"
+			]
+		}
+	]
+}

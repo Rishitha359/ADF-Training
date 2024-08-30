@@ -1,0 +1,29 @@
+{
+	"name": "DS_Series_Dimension",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Sql",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Product_Details Dataset/Fact and Dimension Datasets"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "series_code",
+				"type": "real",
+				"precision": 7
+			},
+			{
+				"name": "series_name",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dim",
+			"table": "Series"
+		}
+	}
+}

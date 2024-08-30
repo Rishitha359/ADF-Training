@@ -1,0 +1,32 @@
+{
+	"name": "DS_Category_Dimension",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Sql",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Product_Details Dataset/Fact and Dimension Datasets"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "department_code",
+				"type": "nvarchar"
+			},
+			{
+				"name": "category_code",
+				"type": "nvarchar"
+			},
+			{
+				"name": "category_name",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dim",
+			"table": "Category"
+		}
+	}
+}

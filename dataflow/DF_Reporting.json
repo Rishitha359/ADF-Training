@@ -8,14 +8,163 @@
 		"typeProperties": {
 			"sources": [
 				{
+					"dataset": {
+						"referenceName": "DS_Fact",
+						"type": "DatasetReference"
+					},
 					"name": "FactTable"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Category_Dimension",
+						"type": "DatasetReference"
+					},
+					"name": "CategoryDimension"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Fact",
+						"type": "DatasetReference"
+					},
+					"name": "FactProductTable"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Brand_Dimension",
+						"type": "DatasetReference"
+					},
+					"name": "BrandDimension"
 				}
 			],
-			"sinks": [],
-			"transformations": [],
+			"sinks": [
+				{
+					"linkedService": {
+						"referenceName": "LS_Sql",
+						"type": "LinkedServiceReference"
+					},
+					"name": "AvgPrices"
+				},
+				{
+					"linkedService": {
+						"referenceName": "LS_Sql",
+						"type": "LinkedServiceReference"
+					},
+					"name": "AvgShippingTimes"
+				}
+			],
+			"transformations": [
+				{
+					"name": "AvgMinMaxPricePerUnit"
+				},
+				{
+					"name": "JoiningFactCategoryDime"
+				},
+				{
+					"name": "JoiningFactBrandDimension"
+				},
+				{
+					"name": "AvgMinMaxDaysToShip"
+				}
+			],
 			"scriptLines": [
-				"source(allowSchemaDrift: true,",
-				"     validateSchema: false) ~> FactTable"
+				"source(output(",
+				"          department_code as string,",
+				"          category_code as string,",
+				"          series_code as float,",
+				"          brand_code as string,",
+				"          min_standard_days_to_ship as integer,",
+				"          max_standard_days_to_ship as integer,",
+				"          direct_cart_type as integer,",
+				"          price_check_less_flag as integer,",
+				"          min_standard_unit_price as double,",
+				"          max_standard_unit_price as double,",
+				"          min_price_per_piece as double,",
+				"          max_price_per_piece as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> FactTable",
+				"source(output(",
+				"          department_code as string,",
+				"          category_code as string,",
+				"          category_name as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> CategoryDimension",
+				"source(output(",
+				"          department_code as string,",
+				"          category_code as string,",
+				"          series_code as float,",
+				"          brand_code as string,",
+				"          min_standard_days_to_ship as integer,",
+				"          max_standard_days_to_ship as integer,",
+				"          direct_cart_type as integer,",
+				"          price_check_less_flag as integer,",
+				"          min_standard_unit_price as double,",
+				"          max_standard_unit_price as double,",
+				"          min_price_per_piece as double,",
+				"          max_price_per_piece as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> FactProductTable",
+				"source(output(",
+				"          brand_code as string,",
+				"          brand_url_code as string,",
+				"          brand_name as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> BrandDimension",
+				"JoiningFactCategoryDime aggregate(groupBy(category_name),",
+				"     avg_min_standard_unit_price = avg(min_price_per_piece),",
+				"          avg_max_standard_unit_price = avg(max_standard_unit_price)) ~> AvgMinMaxPricePerUnit",
+				"FactTable, CategoryDimension join(FactTable@category_code == CategoryDimension@category_code,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> JoiningFactCategoryDime",
+				"FactProductTable, BrandDimension join(FactProductTable@brand_code == BrandDimension@brand_code,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> JoiningFactBrandDimension",
+				"JoiningFactBrandDimension aggregate(groupBy(BrandDimension@brand_code),",
+				"     avg_min_standard_days_to_ship = avg(min_standard_days_to_ship),",
+				"          avg_max_standard_days_to_ship = avg(max_standard_days_to_ship)) ~> AvgMinMaxDaysToShip",
+				"AvgMinMaxPricePerUnit sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'report',",
+				"     tableName: 'AvgPrices',",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     deletable: false,",
+				"     upsertable: false,",
+				"     recreate: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> AvgPrices",
+				"AvgMinMaxDaysToShip sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table',",
+				"     store: 'sqlserver',",
+				"     schemaName: 'report',",
+				"     tableName: 'AvgShippingTimes',",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     deletable: false,",
+				"     upsertable: false,",
+				"     recreate: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> AvgShippingTimes"
 			]
 		}
 	}

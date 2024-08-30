@@ -1,0 +1,32 @@
+{
+	"name": "DS_Brand_Dimension",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Sql",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Product_Details Dataset/Fact and Dimension Datasets"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "brand_code",
+				"type": "nvarchar"
+			},
+			{
+				"name": "brand_url_code",
+				"type": "nvarchar"
+			},
+			{
+				"name": "brand_name",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dim",
+			"table": "Brand"
+		}
+	}
+}

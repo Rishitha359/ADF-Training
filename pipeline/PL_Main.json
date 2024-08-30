@@ -1,0 +1,73 @@
+{
+	"name": "PL_Main",
+	"properties": {
+		"activities": [
+			{
+				"name": "Postgres To Sql",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_Move_Postgres_To_Sql",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Moving data to prep",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Postgres To Sql",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_Move_To_Prep",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Reporting Tables",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Moving data to prep",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_Move_To_Report",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "FullStack Project Pipelines"
+		},
+		"annotations": []
+	}
+}

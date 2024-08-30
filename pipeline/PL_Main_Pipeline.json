@@ -1,0 +1,96 @@
+{
+	"name": "PL_Main_Pipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Move from blob to sql",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_Move_Data_Blob_To_Sql",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Move data to Prep",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Move from blob to sql",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_Move_Data_To_Prep",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Create Fact and Dimension Tables",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Move data to Prep",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_Create_Fact_Dim",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Creating Reporting Table",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Create Fact and Dimension Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_Move_Table_Report",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "Web Scraping Pipelines"
+		},
+		"annotations": []
+	}
+}

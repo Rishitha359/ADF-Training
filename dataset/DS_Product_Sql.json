@@ -1,0 +1,16 @@
+{
+	"name": "DS_Product_Sql",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Sql",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "stage",
+			"table": "ProductDetails"
+		}
+	}
+}

@@ -1,0 +1,23 @@
+{
+	"name": "DS_Product_Blob",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Blob",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "products.csv",
+				"container": "input-data-product"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

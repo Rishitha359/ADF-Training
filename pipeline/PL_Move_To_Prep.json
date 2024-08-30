@@ -4,6 +4,7 @@
 		"activities": [
 			{
 				"name": "Cleaning Data",
+				"description": "Cleaning the data using data flow",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -16,7 +17,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "DL_Cleaning",
+						"referenceName": "DF_Cleaning_Data",
 						"type": "DataFlowReference"
 					},
 					"compute": {
@@ -27,6 +28,9 @@
 				}
 			}
 		],
+		"folder": {
+			"name": "FullStack Project Pipelines"
+		},
 		"annotations": [],
 		"lastPublishTime": "2024-08-29T05:59:28Z"
 	},

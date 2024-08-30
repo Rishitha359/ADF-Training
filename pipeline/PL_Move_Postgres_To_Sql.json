@@ -4,6 +4,7 @@
 		"activities": [
 			{
 				"name": "Moving User to Sql",
+				"description": "Copying User data from Postgres DB to Azure SQL DB",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -50,6 +51,7 @@
 			},
 			{
 				"name": "Moving Event to Sql",
+				"description": "Copying Event data from Postgres DB to Azure SQL DB",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -96,6 +98,7 @@
 			},
 			{
 				"name": "Moving Booking to Sql",
+				"description": "Copying Booking data from Postgres DB to Azure SQL DB",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -141,6 +144,9 @@
 				]
 			}
 		],
+		"folder": {
+			"name": "FullStack Project Pipelines"
+		},
 		"annotations": [],
 		"lastPublishTime": "2024-08-29T05:59:28Z"
 	},

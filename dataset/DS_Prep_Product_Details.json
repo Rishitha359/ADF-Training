@@ -1,0 +1,90 @@
+{
+	"name": "DS_Prep_Product_Details",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Sql",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "department_code",
+				"type": "nvarchar"
+			},
+			{
+				"name": "category_code",
+				"type": "nvarchar"
+			},
+			{
+				"name": "category_name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "series_code",
+				"type": "real",
+				"precision": 7
+			},
+			{
+				"name": "series_name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "brand_code",
+				"type": "nvarchar"
+			},
+			{
+				"name": "brand_url_code",
+				"type": "nvarchar"
+			},
+			{
+				"name": "brand_name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "min_standard_days_to_ship",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "max_standard_days_to_ship",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "direct_cart_type",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "price_check_less_flag",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "min_standard_unit_price",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "max_standard_unit_price",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "min_price_per_piece",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "max_price_per_piece",
+				"type": "float",
+				"precision": 15
+			}
+		],
+		"typeProperties": {
+			"schema": "prep",
+			"table": "ProductDetails"
+		}
+	}
+}

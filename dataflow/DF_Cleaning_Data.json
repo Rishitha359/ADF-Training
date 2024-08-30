@@ -1,6 +1,9 @@
 {
-	"name": "DL_Cleaning",
+	"name": "DF_Cleaning_Data",
 	"properties": {
+		"folder": {
+			"name": "FullStack Data Flows"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [

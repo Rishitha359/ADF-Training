@@ -1,6 +1,9 @@
 {
-	"name": "DL_Reporting",
+	"name": "DF_Reporting_Data",
 	"properties": {
+		"folder": {
+			"name": "FullStack Data Flows"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [

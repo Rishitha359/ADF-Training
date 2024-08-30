@@ -1,10 +1,9 @@
 {
-	"name": "PL_Move_To_Report",
+	"name": "PL_Move_Data_To_Prep",
 	"properties": {
 		"activities": [
 			{
-				"name": "ReportingTable",
-				"description": "Generating reporting table using dataflow",
+				"name": "Cleaning Data",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -17,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "DF_Reporting_Data",
+						"referenceName": "DF_Cleaning",
 						"type": "DataFlowReference"
 					},
 					"compute": {
@@ -29,7 +28,7 @@
 			}
 		],
 		"folder": {
-			"name": "FullStack Project Pipelines"
+			"name": "Web Scraping Pipelines"
 		},
 		"annotations": []
 	}

@@ -1,0 +1,46 @@
+{
+	"name": "DF_Reporting",
+	"properties": {
+		"folder": {
+			"name": "Web Scraping Data Flows"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Prep_Product_Details",
+						"type": "DatasetReference"
+					},
+					"name": "CleanedProductData"
+				}
+			],
+			"sinks": [],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          department_code as string,",
+				"          category_code as string,",
+				"          category_name as string,",
+				"          series_code as float,",
+				"          series_name as string,",
+				"          brand_code as string,",
+				"          brand_url_code as string,",
+				"          brand_name as string,",
+				"          min_standard_days_to_ship as integer,",
+				"          max_standard_days_to_ship as integer,",
+				"          direct_cart_type as integer,",
+				"          price_check_less_flag as integer,",
+				"          min_standard_unit_price as double,",
+				"          max_standard_unit_price as double,",
+				"          min_price_per_piece as double,",
+				"          max_price_per_piece as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> CleanedProductData"
+			]
+		}
+	}
+}

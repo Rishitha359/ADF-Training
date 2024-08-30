@@ -11,6 +11,9 @@
 		"LS_Sql_password": {
 			"value": ""
 		},
+		"LS_Blob_connectionString": {
+			"value": ""
+		},
 		"LS_Postgres_properties_typeProperties_server": {
 			"value": "localhost"
 		},

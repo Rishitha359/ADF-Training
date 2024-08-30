@@ -6,650 +6,12 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "dfMiniProject001"
-		},
-		"LS_Postgres_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'LS_Postgres'"
-		},
-		"LS_Sql_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'LS_Sql'"
-		},
-		"LS_Blob_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'LS_Blob'"
-		},
-		"LS_Postgres_properties_typeProperties_server": {
-			"type": "string",
-			"defaultValue": "localhost"
-		},
-		"LS_Postgres_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "Event_Planner"
-		},
-		"LS_Postgres_properties_typeProperties_username": {
-			"type": "string",
-			"defaultValue": "postgres"
-		},
-		"LS_Sql_properties_typeProperties_server": {
-			"type": "string",
-			"defaultValue": "dbs-training001.database.windows.net"
-		},
-		"LS_Sql_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "db_training001"
-		},
-		"LS_Sql_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "Rishitha"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
-		{
-			"name": "[concat(parameters('factoryName'), '/PL_Move_Postgres_To_Sql')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Moving User to Sql",
-						"description": "Copying User data from Postgres DB to Azure SQL DB",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "PostgreSqlV2Source"
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false,
-								"tableOption": "autoCreate",
-								"disableMetricsCollection": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "DS_Postgres_User",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DS_Sql_User",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "Moving Event to Sql",
-						"description": "Copying Event data from Postgres DB to Azure SQL DB",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "PostgreSqlV2Source"
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false,
-								"tableOption": "autoCreate",
-								"disableMetricsCollection": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "DS_Postgres_Event",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DS_Sql_Event",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "Moving Booking to Sql",
-						"description": "Copying Booking data from Postgres DB to Azure SQL DB",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "PostgreSqlV2Source"
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false,
-								"tableOption": "autoCreate",
-								"disableMetricsCollection": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "DS_Postgres_Booking",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DS_Sql_Booking",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "FullStack Project Pipelines"
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-08-29T05:59:28Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/DS_Postgres_User')]",
-				"[concat(variables('factoryId'), '/datasets/DS_Sql_User')]",
-				"[concat(variables('factoryId'), '/datasets/DS_Postgres_Event')]",
-				"[concat(variables('factoryId'), '/datasets/DS_Sql_Event')]",
-				"[concat(variables('factoryId'), '/datasets/DS_Postgres_Booking')]",
-				"[concat(variables('factoryId'), '/datasets/DS_Sql_Booking')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/PL_Move_To_Prep')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Cleaning Data",
-						"description": "Cleaning the data using data flow",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "DF_Cleaning_Data",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"UserTable": {},
-									"EventTable": {},
-									"BookingTable": {},
-									"CleanedUserTable": {},
-									"CleanedEventTable": {},
-									"CleanedBookingTable": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "FullStack Project Pipelines"
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-08-29T05:59:28Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/DF_Cleaning_Data')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/PL_Move_To_Report')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "ReportingTable",
-						"description": "Generating reporting table using dataflow",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "DF_Reporting_Data",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"UserTable": {},
-									"BookingTable": {},
-									"EventTable": {},
-									"EventTab": {},
-									"LocationBasedEvents": {},
-									"MonthBasedEvents": {},
-									"CountOfBookingPerUser": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "FullStack Project Pipelines"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/DF_Reporting_Data')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_Postgres_Booking')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_Postgres",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Full Stack Datasets/Postgres_Tables"
-				},
-				"annotations": [],
-				"type": "PostgreSqlV2Table",
-				"schema": [],
-				"typeProperties": {
-					"schema": "public",
-					"table": "Booking"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_Postgres')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_Postgres_Event')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_Postgres",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Full Stack Datasets/Postgres_Tables"
-				},
-				"annotations": [],
-				"type": "PostgreSqlV2Table",
-				"schema": [],
-				"typeProperties": {
-					"schema": "public",
-					"table": "Event"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_Postgres')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_Postgres_User')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_Postgres",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Full Stack Datasets/Postgres_Tables"
-				},
-				"annotations": [],
-				"type": "PostgreSqlV2Table",
-				"schema": [],
-				"typeProperties": {
-					"schema": "public",
-					"table": "User"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_Postgres')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_Prep_Booking')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_Sql",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Full Stack Datasets/Prep Layer Datasets"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "prep",
-					"table": "Booking"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_Sql')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_Prep_Event')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_Sql",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Full Stack Datasets/Prep Layer Datasets"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "name",
-						"type": "nvarchar"
-					},
-					{
-						"name": "date",
-						"type": "date"
-					},
-					{
-						"name": "description",
-						"type": "nvarchar"
-					},
-					{
-						"name": "location",
-						"type": "nvarchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "prep",
-					"table": "Event"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_Sql')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_Prep_User')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_Sql",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Full Stack Datasets/Prep Layer Datasets"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "name",
-						"type": "nvarchar"
-					},
-					{
-						"name": "email",
-						"type": "nvarchar"
-					},
-					{
-						"name": "password",
-						"type": "nvarchar"
-					},
-					{
-						"name": "isAdmin",
-						"type": "bit"
-					}
-				],
-				"typeProperties": {
-					"schema": "prep",
-					"table": "User"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_Sql')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_Sql_Booking')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_Sql",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Full Stack Datasets/Raw Layer Datasets"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "stage",
-					"table": "Booking"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_Sql')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_Sql_Event')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_Sql",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Full Stack Datasets/Raw Layer Datasets"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "stage",
-					"table": "Event"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_Sql')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_Sql_User')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_Sql",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Full Stack Datasets/Raw Layer Datasets"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "stage",
-					"table": "User"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_Sql')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/LS_Postgres')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "PostgreSqlV2",
-				"typeProperties": {
-					"server": "[parameters('LS_Postgres_properties_typeProperties_server')]",
-					"port": 5432,
-					"database": "[parameters('LS_Postgres_properties_typeProperties_database')]",
-					"username": "[parameters('LS_Postgres_properties_typeProperties_username')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('LS_Postgres_password')]"
-					},
-					"sslMode": 2,
-					"authenticationType": "Basic"
-				},
-				"connectVia": {
-					"referenceName": "IR-postgres",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/IR-postgres')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/LS_Sql')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureSqlDatabase",
-				"typeProperties": {
-					"server": "[parameters('LS_Sql_properties_typeProperties_server')]",
-					"database": "[parameters('LS_Sql_properties_typeProperties_database')]",
-					"encrypt": "mandatory",
-					"trustServerCertificate": false,
-					"authenticationType": "SQL",
-					"userName": "[parameters('LS_Sql_properties_typeProperties_userName')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('LS_Sql_password')]"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/IR-postgres')]",
-			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "SelfHosted",
-				"typeProperties": {}
-			},
-			"dependsOn": []
-		},
 		{
 			"name": "[concat(parameters('factoryName'), '/DF_Cleaning_Data')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
@@ -872,12 +234,7 @@
 					]
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/DS_Sql_User')]",
-				"[concat(variables('factoryId'), '/datasets/DS_Sql_Event')]",
-				"[concat(variables('factoryId'), '/datasets/DS_Sql_Booking')]",
-				"[concat(variables('factoryId'), '/linkedServices/LS_Sql')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/DF_Reporting_Data')]",
@@ -1073,12 +430,7 @@
 					]
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/DS_Prep_User')]",
-				"[concat(variables('factoryId'), '/datasets/DS_Prep_Booking')]",
-				"[concat(variables('factoryId'), '/datasets/DS_Prep_Event')]",
-				"[concat(variables('factoryId'), '/linkedServices/LS_Sql')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/PL_Move_Data_Blob_To_Sql')]",
@@ -1152,78 +504,7 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/DS_Product_Blob')]",
-				"[concat(variables('factoryId'), '/datasets/DS_Product_Sql')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/LS_Blob')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobStorage",
-				"typeProperties": {
-					"connectionString": "[parameters('LS_Blob_connectionString')]"
-				}
-			},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_Product_Blob')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_Blob",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Product_Details Dataset/Raw Datasets"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "products.csv",
-						"container": "input-data-product"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_Blob')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_Product_Sql')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_Sql",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Product_Details Dataset/Raw Datasets"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "stage",
-					"table": "ProductDetails"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_Sql')]"
-			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/DF_Cleaning')]",
@@ -1317,10 +598,7 @@
 					]
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/DS_Product_Sql')]",
-				"[concat(variables('factoryId'), '/linkedServices/LS_Sql')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/DF_Fact_And_Dimension')]",
@@ -1651,212 +929,7 @@
 					]
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/DS_Prep_Product_Details')]",
-				"[concat(variables('factoryId'), '/linkedServices/LS_Sql')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/PL_Move_Data_To_Prep')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Cleaning Data",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "DF_Cleaning",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"ProductDetails": {},
-									"CleanedProductDetails": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "Web Scraping Pipelines"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/DF_Cleaning')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_Prep_Product_Details')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_Sql",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Product_Details Dataset/Prep Layer Datasets"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "department_code",
-						"type": "nvarchar"
-					},
-					{
-						"name": "category_code",
-						"type": "nvarchar"
-					},
-					{
-						"name": "category_name",
-						"type": "nvarchar"
-					},
-					{
-						"name": "series_code",
-						"type": "real",
-						"precision": 7
-					},
-					{
-						"name": "series_name",
-						"type": "nvarchar"
-					},
-					{
-						"name": "brand_code",
-						"type": "nvarchar"
-					},
-					{
-						"name": "brand_url_code",
-						"type": "nvarchar"
-					},
-					{
-						"name": "brand_name",
-						"type": "nvarchar"
-					},
-					{
-						"name": "min_standard_days_to_ship",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "max_standard_days_to_ship",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "direct_cart_type",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "price_check_less_flag",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "min_standard_unit_price",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "max_standard_unit_price",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "min_price_per_piece",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "max_price_per_piece",
-						"type": "float",
-						"precision": 15
-					}
-				],
-				"typeProperties": {
-					"schema": "prep",
-					"table": "ProductDetails"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_Sql')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/PL_Create_Fact_Dim')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Fact and Dimension Table",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "DF_Fact_And_Dimension",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"CleanedProductData": {},
-									"ProductDetails": {},
-									"ProductData": {},
-									"ProductDeta": {},
-									"CategoryDimension": {},
-									"SeriesDimension": {},
-									"BrandDimension": {},
-									"FactTable": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "Web Scraping Pipelines"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/DF_Fact_And_Dimension')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/DF_Reporting')]",
@@ -2030,201 +1103,438 @@
 					]
 				}
 			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_Move_Postgres_To_Sql')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Moving User to Sql",
+						"description": "Copying User data from Postgres DB to Azure SQL DB",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "PostgreSqlV2Source"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"tableOption": "autoCreate",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_Postgres_User",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_Sql_User",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Moving Event to Sql",
+						"description": "Copying Event data from Postgres DB to Azure SQL DB",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "PostgreSqlV2Source"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"tableOption": "autoCreate",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_Postgres_Event",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_Sql_Event",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Moving Booking to Sql",
+						"description": "Copying Booking data from Postgres DB to Azure SQL DB",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "PostgreSqlV2Source"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"tableOption": "autoCreate",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_Postgres_Booking",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_Sql_Booking",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "FullStack Project Pipelines"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-08-29T05:59:28Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_Move_To_Prep')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Cleaning Data",
+						"description": "Cleaning the data using data flow",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DF_Cleaning_Data",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"UserTable": {},
+									"EventTable": {},
+									"BookingTable": {},
+									"CleanedUserTable": {},
+									"CleanedEventTable": {},
+									"CleanedBookingTable": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "FullStack Project Pipelines"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-08-29T05:59:28Z"
+			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/DS_Fact')]",
-				"[concat(variables('factoryId'), '/datasets/DS_Category_Dimension')]",
-				"[concat(variables('factoryId'), '/datasets/DS_Brand_Dimension')]",
-				"[concat(variables('factoryId'), '/linkedServices/LS_Sql')]"
+				"[concat(variables('factoryId'), '/dataflows/DF_Cleaning_Data')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DS_Fact')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
+			"name": "[concat(parameters('factoryName'), '/PL_Move_To_Report')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_Sql",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Product_Details Dataset/Fact and Dimension Datasets"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
+				"activities": [
 					{
-						"name": "department_code",
-						"type": "nvarchar"
-					},
-					{
-						"name": "category_code",
-						"type": "nvarchar"
-					},
-					{
-						"name": "series_code",
-						"type": "real",
-						"precision": 7
-					},
-					{
-						"name": "brand_code",
-						"type": "nvarchar"
-					},
-					{
-						"name": "min_standard_days_to_ship",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "max_standard_days_to_ship",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "direct_cart_type",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "price_check_less_flag",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "min_standard_unit_price",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "max_standard_unit_price",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "min_price_per_piece",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "max_price_per_piece",
-						"type": "float",
-						"precision": 15
+						"name": "ReportingTable",
+						"description": "Generating reporting table using dataflow",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DF_Reporting_Data",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"UserTable": {},
+									"BookingTable": {},
+									"EventTable": {},
+									"EventTab": {},
+									"LocationBasedEvents": {},
+									"MonthBasedEvents": {},
+									"CountOfBookingPerUser": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
 					}
 				],
-				"typeProperties": {
-					"schema": "fact",
-					"table": "ProductData"
-				}
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "FullStack Project Pipelines"
+				},
+				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_Sql')]"
+				"[concat(variables('factoryId'), '/dataflows/DF_Reporting_Data')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DS_Category_Dimension')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
+			"name": "[concat(parameters('factoryName'), '/PL_Move_Data_To_Prep')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_Sql",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Product_Details Dataset/Fact and Dimension Datasets"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
+				"activities": [
 					{
-						"name": "department_code",
-						"type": "nvarchar"
-					},
-					{
-						"name": "category_code",
-						"type": "nvarchar"
-					},
-					{
-						"name": "category_name",
-						"type": "nvarchar"
+						"name": "Cleaning Data",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DF_Cleaning",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"ProductDetails": {},
+									"CleanedProductDetails": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
 					}
 				],
-				"typeProperties": {
-					"schema": "dim",
-					"table": "Category"
-				}
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "Web Scraping Pipelines"
+				},
+				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_Sql')]"
+				"[concat(variables('factoryId'), '/dataflows/DF_Cleaning')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DS_Brand_Dimension')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
+			"name": "[concat(parameters('factoryName'), '/PL_Create_Fact_Dim')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_Sql",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Product_Details Dataset/Fact and Dimension Datasets"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
+				"activities": [
 					{
-						"name": "brand_code",
-						"type": "nvarchar"
-					},
-					{
-						"name": "brand_url_code",
-						"type": "nvarchar"
-					},
-					{
-						"name": "brand_name",
-						"type": "nvarchar"
+						"name": "Fact and Dimension Table",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DF_Fact_And_Dimension",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"CleanedProductData": {},
+									"ProductDetails": {},
+									"ProductData": {},
+									"ProductDeta": {},
+									"CategoryDimension": {},
+									"SeriesDimension": {},
+									"BrandDimension": {},
+									"FactTable": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
 					}
 				],
-				"typeProperties": {
-					"schema": "dim",
-					"table": "Brand"
-				}
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "Web Scraping Pipelines"
+				},
+				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_Sql')]"
+				"[concat(variables('factoryId'), '/dataflows/DF_Fact_And_Dimension')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DS_Series_Dimension')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
+			"name": "[concat(parameters('factoryName'), '/PL_Move_Table_Report')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_Sql",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Product_Details Dataset/Fact and Dimension Datasets"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
+				"activities": [
 					{
-						"name": "series_code",
-						"type": "real",
-						"precision": 7
-					},
-					{
-						"name": "series_name",
-						"type": "nvarchar"
+						"name": "Creating Reporting Table",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DF_Reporting",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"FactTable": {},
+									"CategoryDimension": {},
+									"FactProductTable": {},
+									"BrandDimension": {},
+									"AvgPrices": {},
+									"AvgShippingTimes": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
 					}
 				],
-				"typeProperties": {
-					"schema": "dim",
-					"table": "Series"
-				}
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "Web Scraping Pipelines"
+				},
+				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_Sql')]"
+				"[concat(variables('factoryId'), '/dataflows/DF_Reporting')]"
 			]
 		},
 		{
@@ -2422,59 +1732,6 @@
 				"[concat(variables('factoryId'), '/pipelines/PL_Move_Data_To_Prep')]",
 				"[concat(variables('factoryId'), '/pipelines/PL_Create_Fact_Dim')]",
 				"[concat(variables('factoryId'), '/pipelines/PL_Move_Table_Report')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/PL_Move_Table_Report')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Creating Reporting Table",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "DF_Reporting",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"FactTable": {},
-									"CategoryDimension": {},
-									"FactProductTable": {},
-									"BrandDimension": {},
-									"AvgPrices": {},
-									"AvgShippingTimes": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "Web Scraping Pipelines"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/DF_Reporting')]"
 			]
 		}
 	]

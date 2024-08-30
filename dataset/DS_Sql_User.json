@@ -6,7 +6,7 @@
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
-			"name": "Raw Layer Datasets"
+			"name": "Full Stack Datasets/Raw Layer Datasets"
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",

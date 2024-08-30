@@ -6,7 +6,7 @@
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
-			"name": "Prep Layer Datasets"
+			"name": "Full Stack Datasets/Prep Layer Datasets"
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",

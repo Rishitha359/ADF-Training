@@ -5,6 +5,9 @@
 			"referenceName": "LS_Sql",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "Product_Details Dataset/Prep Layer Datasets"
+		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [

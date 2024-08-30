@@ -6,7 +6,7 @@
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
-			"name": "Postgres_Tables"
+			"name": "Full Stack Datasets/Postgres_Tables"
 		},
 		"annotations": [],
 		"type": "PostgreSqlV2Table",

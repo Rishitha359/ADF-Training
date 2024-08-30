@@ -5,6 +5,9 @@
 			"referenceName": "LS_Blob",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "Product_Details Dataset/Raw Datasets"
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {

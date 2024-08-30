@@ -1,0 +1,35 @@
+{
+	"name": "PL_Create_Fact_Dim",
+	"properties": {
+		"activities": [
+			{
+				"name": "Fact and Dimension Table",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_Fact_And_Dimension",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "Web Scraping Pipelines"
+		},
+		"annotations": []
+	}
+}
